@@ -1,0 +1,222 @@
+
+<div class="jumbotron shadow-lg p-3 mb-5 bg-white rounded">
+  <div class="container">
+      <div class="alert alert-success" role="alert" [ngClass]="isSuccess?'':'d-none'">
+         {{successMessage}}
+        </div>
+        <div class="alert alert-danger" role="alert" [ngClass]="isError?'':'d-none'">
+            {{errorMessage}}
+          </div>
+    <div class="lead">
+      <form>
+
+          <div class="form-group row">
+              <label class="col-sm-3">Project</label>
+              <div class="col-sm-6">
+                <input type="text" class="form-control" name="project" placeholder="Project" [(ngModel)]="project" readonly>
+              </div>
+              <div class="col-sm-3">
+                  <button type="button" class="btn btn-primary btn-sm btn-block"  
+                  [disabled]="fromViewTask || isChecked" (click)="open(projectContent)">Search</button>
+                </div>
+            </div>
+        <div class="form-group row">
+          <label class="col-sm-3">Task</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" name="task" placeholder="Task" [(ngModel)]="task">
+          </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-3"></div>
+          <div class="col-sm-9 custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="customCheck1" [disabled]="fromViewTask" 
+              [checked]="isChecked" (change)="enableDisableControls()">
+              <label class="custom-control-label" for="customCheck1">Parent Task</label>
+            </div>
+        </div>
+
+        <div class="row">
+          <label class="col-sm-3">Priority</label>
+          <div class="col-sm-9">
+            <label class="range-label">0</label>
+            <input type="range" class="form-control-range" name="priority" 
+            [disabled]="isChecked" min="0" max="30" [(ngModel)]="priority">
+            <label class="range-label">30</label>
+            <span>{{priority}}</span>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label class="col-sm-3">Parent Task</label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" id="parentTask" name="parentTask" placeholder="Parent Task" [(ngModel)]="parentTask" readonly>
+          </div>
+          <div class="col-sm-3">
+              <button type="button" class="btn btn-primary btn-sm btn-block" 
+              [disabled]="isChecked" (click)="open(parentContent)">Search</button>
+            </div>
+        </div>
+
+        <div class="form-group row">
+          <label class="col-sm-3">Start Date</label>
+          <div class="col-sm-3">
+            <input type="date" class="form-control" 
+            [disabled]="isChecked" [(ngModel)]="startDate" name="startDate">
+          </div>
+          <label class="col-sm-3">End Date</label>
+          <div class="col-sm-3">
+            <input type="date" class="form-control" 
+            [disabled]="isChecked" [(ngModel)]="endDate" name="endDate">
+          </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-3">User</label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" name="user" 
+              [disabled]="isChecked" placeholder="User" [(ngModel)]="selectedName" readonly>
+            </div>
+            <div class="col-sm-3">
+                <button type="button" class="btn btn-primary btn-sm btn-block" [disabled]="isChecked"  (click)="open(userContent)">Search</button>
+              </div>
+          </div>
+
+        <div class="row">
+          <div class="col-sm-3"></div>
+          <div class="col-sm-3"></div>
+          
+          <div class="col-sm-3">
+            <button type="button" class="btn btn-primary btn-lg btn-block" (click)="addTask()">{{formTitle}}</button>
+          </div>
+
+          <div class="col-sm-3">
+              <button type="button" class="btn btn-secondary btn-lg btn-block"  [disabled]="fromViewTask"  (click)="resetForm()">Reset</button>
+            </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<ng-template #projectContent let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click');">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <div class="container">
+            <div class="form-group row">
+                <label class="col-sm-3">Search Project:</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" name="modalProject" placeholder="Search.." [(ngModel)]="searchProjectText">
+                </div>
+              </div>
+ 
+              <div class="row table-responsive">
+                  <table class="table">
+                      <thead class="thead-light">
+                        <tr>
+                          <th scope="col">Project Name</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let proj of projectList |  dataFilter : {Project:searchProjectText} ">
+                          <td>{{proj.Project}}</td>
+                          <td>
+                              <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-primary btn-sm font-weight-bold" (click)="selectProject(proj.Project_ID);d('Cross click');">Select Project</button>
+                              </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+              </div>
+          </div>
+    </div>
+  </ng-template>
+
+  <ng-template #parentContent let-c="close" let-d="dismiss">
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click');">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="container">
+              <div class="form-group row">
+                  <label class="col-sm-3">Search Parent Task:</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" name="modalParent" placeholder="Search.." [(ngModel)]="searchParentText">
+                  </div>
+                </div>
+   
+                <div class="row table-responsive">
+                    <table class="table">
+                        <thead class="thead-light">
+                          <tr>
+                            <th scope="col">Parent Task</th>
+                            <th scope="col">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let parent of parentList |  dataFilter : {Parent_Task:searchParentText} ">
+                            <td>{{parent.Parent_Task}}</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                  <button type="button" class="btn btn-primary btn-sm font-weight-bold" 
+                                  (click)="selectParent(parent.Parent_ID); d('Cross click');">Select Parent</button>
+                                </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                </div>
+            </div>
+      </div>
+    </ng-template>
+
+  <ng-template #userContent let-c="close" let-d="dismiss">
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click');">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="container">
+              <div class="form-group row">
+                  <label class="col-sm-3">Search User:</label>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control" name="user" placeholder="Search.." [(ngModel)]="searchUserText">
+                  </div>
+                </div>
+  
+                <div class="row table-responsive">
+                    <table class="table">
+                        <thead class="thead-light">
+                          <tr>
+                            <th scope="col">Employee ID</th>
+                            <th scope="col">First Name</th>
+                            <th scope="col">Last Name</th>
+                            <th scope="col">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let user of userList  | dataFilter : {FirstName:searchUserText, LastName:searchUserText, Employee_ID:searchUserText} ">
+                            <td>{{user.Employee_ID}}</td>
+                            <td>{{user.FirstName}}</td>
+                            <td>{{user.LastName}}</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                  <button type="button" class="btn btn-primary btn-sm font-weight-bold" (click)="selectUser(user.User_ID);d('Cross click');">Select User</button>
+                                </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                </div>
+            </div>
+      </div>
+    </ng-template>

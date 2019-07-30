@@ -1,0 +1,162 @@
+<div class="jumbotron shadow-lg p-3 mb-5 bg-white rounded">
+  <div class="container">
+      <div class="alert alert-success" role="alert" [ngClass]="isSuccess?'':'d-none'">
+         {{successMessage}}
+        </div>
+        <div class="alert alert-danger" role="alert" [ngClass]="isError?'':'d-none'">
+            {{errorMessage}}
+          </div>
+    <div class="lead">
+      <form>
+        <div class="form-group row">
+          <label class="col-sm-2 col-md-3 col-lg-2 col-form-label">Project:</label>
+          <div class="col-sm-10 col-md-9 col-lg-10">
+            <input type="text" class="form-control" name="project" placeholder="Project" [(ngModel)]="project">
+          </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="customCheck1" [checked]="isChecked" (change)="enableDiasbleDates()">
+                <label class="custom-control-label" for="customCheck1">Set Start and End Date</label>
+              </div>
+            <div class="col-sm-4 col-md-3 col-lg-4">
+              <input type="date" class="form-control" [disabled]="!isChecked" [(ngModel)]="startDate" name="startDate">
+            </div>
+            <div class="col-sm-4 col-md-3 col-lg-4">
+              <input type="date" class="form-control" [disabled]="!isChecked" [(ngModel)]="endDate" name="endDate">
+            </div>
+          </div>
+
+        <div class="form-group row">
+          <label class="col-sm-2 col-md-3 col-lg-2 col-form-label">Priority</label>
+          <div class="col-sm-10 col-md-9 col-lg-10 cls-center">
+            <label class="range-label">0</label>
+            <input type="range" class="form-control-range" name="priority" min="0" max="30" [(ngModel)]="priority">
+            <label class="range-label">30</label>
+            <span>{{priority}}</span>
+          </div>
+        </div>
+        
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-md-3 col-lg-2 col-form-label">Manager:</label>
+            <div class="col-sm-7">
+              <input type="text" class="form-control" name="manager" [(ngModel)]="selectedName" readonly>
+            </div>
+            <div class="col-sm-3">
+                <button type="button" class="btn btn-primary btn-md" (click)="open(searchContent)">Search</button>
+              </div>
+          </div>
+
+        <div class="row">
+          <div class="col-sm-3"></div>
+          <div class="col-sm-3"></div>
+          <div class="col-sm-3">
+              <button type="button" class="btn btn-primary btn-lg btn-block" (click)="addProject()">{{formTitle}}</button>
+            </div>
+          <div class="col-sm-3">
+            <button type="button" class="btn btn-secondary btn-lg btn-block" (click)="resetForm()">Reset</button>
+          </div>
+          
+        </div>
+      </form>
+    </div>
+
+    <hr class="separator">
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-md-3 col-lg-2 col-form-label">Search:</label>
+        <div class="col-sm-10 col-md-9 col-lg-10">
+          <input type="text" class="form-control" name="saearch" placeholder="Search.." [(ngModel)]="searchText">
+        </div>
+      </div>
+
+      <div class="row">
+          <label class="col-sm-2 col-md-3 col-lg-2 col-form-label">Sort by:</label>
+          <button type="button" class="btn btn-primary btn-md" (click)="sortList('StartDate')">Start Date</button>&nbsp;
+<button type="button" class="btn btn-primary btn-md" (click)="sortList('EndDate')">End Date</button>&nbsp;
+<button type="button" class="btn btn-primary btn-md" (click)="sortList('Priority')">Priority</button>&nbsp;
+<button type="button" class="btn btn-primary btn-md" (click)="sortList('Completed')">Completed</button>
+        </div>
+
+        <br>
+
+<!-- Project List -->
+    <div class="row table-responsive">
+        <table class="table">
+            <thead class="thead-light">
+              <tr>
+                 <th scope="col">Project</th>
+                <th scope="col">No. of Tasks</th>
+                <th scope="col">Completed</th>
+                <th scope="col">Priority</th>
+                <th scope="col">Start</th>
+                <th scope="col">End</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+                  <tr *ngFor="let project of projectList |  dataFilter : {Project:searchText} ">
+                <td>{{project.Project}}</td>
+                <td>{{project.NoofTasks}}</td>
+                <td>{{project.Completed}}</td>
+                <td>{{project.Priority}}</td>
+                <td>{{project.StartDate  | date: 'dd-MMM-yyyy' }}</td>
+                <td>{{project.EndDate | date: 'dd-MMM-yyyy' }}</td>
+                <td>
+                    <div>
+                      <button type="button" class="btn btn-primary btn-sm" (click)="selectProject(project.Project_ID)">Update</button>&nbsp;
+                      <button type="button" class="btn btn-primary btn-sm" (click)="openEndTask(endContent);editTask(task.TaskID,true)">Suspend</button>
+                    </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+
+  </div>
+</div>
+
+<ng-template #searchContent let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click');close()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <div class="container">
+            <div class="form-group row">
+                <label class="col-sm-3">Search User:</label>
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" name="user" placeholder="Search.." [(ngModel)]="searchUserText">
+                </div>
+              </div>
+
+              <div class="row table-responsive">
+                  <table class="table">
+                      <thead class="thead-light">
+                        <tr>
+                          <th scope="col">Employee ID</th>
+                          <th scope="col">First Name</th>
+                          <th scope="col">Last Name</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let user of userList  | dataFilter : {FirstName:searchUserText, LastName:searchUserText, Employee_ID:searchUserText} ">
+                          <td>{{user.Employee_ID}}</td>
+                          <td>{{user.FirstName}}</td>
+                          <td>{{user.LastName}}</td>
+                          <td>
+                              <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-primary btn-sm font-weight-bold" (click)="selectUser(user.User_ID)">Select User</button>
+                              </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+              </div>
+          </div>
+    </div>
+  </ng-template>

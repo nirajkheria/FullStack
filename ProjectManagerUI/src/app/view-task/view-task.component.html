@@ -1,0 +1,135 @@
+
+<div class="jumbotron shadow-lg p-3 mb-5 bg-white rounded">
+
+    <div class="form-group row">
+        <label class="col-sm-3">Project</label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" name="project" placeholder="Project" [(ngModel)]="project" readonly>
+        </div>
+        <div class="col-sm-3">
+            <button type="button" class="btn btn-primary btn-sm btn-block"  
+            [disabled]="isChecked" (click)="open(projectContent)">Search</button>
+          </div>
+      </div>
+
+      <div class="form-group row">
+          <div class="col-sm-12">
+              <label>Sort by:</label>
+          <button type="button" class="btn btn-primary btn-md" (click)="sortList('StartDate')">Start Date</button>&nbsp;
+<button type="button" class="btn btn-primary btn-md" (click)="sortList('EndDate')">End Date</button>&nbsp;
+<button type="button" class="btn btn-primary btn-md" (click)="sortList('Priority')">Priority</button>&nbsp;
+<button type="button" class="btn btn-primary btn-md" (click)="sortList('Completed')">Completed</button>
+</div>
+      </div>
+
+    <hr class="my-4">
+    <div class="row">
+      <div class="col-sm-9">
+          <div class="alert alert-info" *ngIf="isSearch">
+             {{searchMessage}}
+            </div>
+            <div class="alert alert-success" *ngIf="isSuccess">
+              {{successMessage}}
+            </div>
+      </div>
+    </div>
+  </div>
+  <div class="row table-responsive">
+      <table class="table">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">Task</th>
+              <th scope="col">Parent</th>
+              <th scope="col">Priority</th>
+              <th scope="col">Start</th>
+              <th scope="col">End</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let task of projectTaskList">
+              <td>{{task.Task}}</td>
+              <td>{{task.ParentTaskName}}</td>
+              <td>{{task.Priority}}</td>
+              <td>{{task.StartDate  | date: 'dd-MMM-yyyy' }}</td>
+              <td>{{task.EndDate | date: 'dd-MMM-yyyy' }}</td>
+              <td>
+                  <div>
+                    <button type="button" class="btn btn-primary btn-sm" (click)="open(editContent);editTask(task.Task_ID)">Edit Task</button>&nbsp;
+                    <button type="button" class="btn btn-primary btn-sm" (click)="openEndTask(endContent);editTask(task.Task_ID)">End Task</button>
+                  </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  </div>
+
+
+  <ng-template #editContent let-c="close" let-d="dismiss">
+      <div class="modal-header">
+        <!-- <h4 class="modal-title" id="modal-basic-title">Update Task</h4> -->
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click');close()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <app-add-task [EditTask]="selectedTask"></app-add-task>
+      </div>
+    </ng-template>
+
+    <ng-template #endContent let-c="close" let-d="dismiss">
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">{{modalButtonText}} Task</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click');close()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Are you sure you want to {{modalButtonText}} the Task : <span class="text-primary">"{{selectedTask.Task}}"</span>?</strong></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="d('Cross click');close()">Cancel</button>
+        <button type="button" class="btn btn-warning" (click)="endTask(selectedTask.Task_ID)">Yes, {{modalButtonText}} the Task</button>
+      </div>
+      
+    </ng-template>
+
+    <ng-template #projectContent let-c="close" let-d="dismiss">
+        <div class="modal-header">
+          <button type="button" class="close" aria-label="Close" (click)="d('Cross click');">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="container">
+                <div class="form-group row">
+                    <label class="col-sm-3">Search Project:</label>
+                    <div class="col-sm-9">
+                      <input type="text" class="form-control" name="modalProject" placeholder="Search.." [(ngModel)]="searchProjectText">
+                    </div>
+                  </div>
+     
+                  <div class="row table-responsive">
+                      <table class="table">
+                          <thead class="thead-light">
+                            <tr>
+                              <th scope="col">Project Name</th>
+                              <th scope="col">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let proj of projectList |  dataFilter : {Project:searchProjectText} ">
+                              <td>{{proj.Project}}</td>
+                              <td>
+                                  <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-primary btn-sm font-weight-bold" (click)="selectProject(proj.Project_ID); d('Cross click');">Select Project</button>
+                                  </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                  </div>
+              </div>
+        </div>
+      </ng-template>
+    

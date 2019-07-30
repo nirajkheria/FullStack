@@ -1,0 +1,98 @@
+<div class="jumbotron shadow-lg p-3 mb-5 bg-white rounded">
+    <div class="container">
+        <div class="alert alert-success" role="alert" [ngClass]="isSuccess?'':'d-none'">
+           {{successMessage}}
+          </div>
+          <div class="alert alert-danger" role="alert" [ngClass]="isError?'':'d-none'">
+              {{errorMessage}}
+            </div>
+      <div class="lead">
+        <form>
+          <div class="form-group row">
+            <label class="col-sm-2 col-md-3 col-lg-2 col-form-label">First Name:</label>
+            <div class="col-sm-10 col-md-9 col-lg-10">
+              <input type="text" class="form-control" name="firstName" placeholder="First Name" 
+              [(ngModel)]="firstName">
+            </div>
+          </div>
+
+          <div class="form-group row">
+              <label class="col-sm-2 col-md-3 col-lg-2 col-form-label">Last Name:</label>
+              <div class="col-sm-10 col-md-9 col-lg-10">
+                <input type="text" class="form-control" name="lastName" 
+                placeholder="Last Name" [(ngModel)]="lastName">
+              </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-md-3 col-lg-2 col-form-label">Employee ID:</label>
+                <div class="col-sm-10 col-md-9 col-lg-10">
+                  <input type="text" class="form-control" name="employeeID" 
+                  placeholder="Employee ID" [(ngModel)]="employeeID">
+                </div>
+              </div>
+  
+          <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-3"></div>
+            <div class="col-sm-3">
+                <button type="button" class="btn btn-primary btn-lg btn-block" (click)="addUser()">{{formTitle}}</button>
+              </div>
+            <div class="col-sm-3">
+              <button type="button" class="btn btn-secondary btn-lg btn-block" (click)="resetForm()">Reset</button>
+            </div>
+            
+          </div>
+        </form>
+      </div>
+  
+      <hr class="separator">
+  
+      <div class="form-group row">
+          <label class="col-sm-2 col-md-3 col-lg-2 col-form-label">Search:</label>
+          <div class="col-sm-10 col-md-9 col-lg-10">
+            <input type="text" class="form-control" name="search" placeholder="Search.." [(ngModel)] = "searchText">
+          </div>
+        </div>
+  
+        <div class="row">
+            <label class="col-sm-2 col-md-3 col-lg-2 col-form-label">Sort by:</label>
+            <button type="button" class="btn btn-primary btn-md" (click)="sortList('FirstName')">First Name</button>&nbsp;
+  <button type="button" class="btn btn-primary btn-md" (click)="sortList('LastName')">Last Name</button>&nbsp;
+  <button type="button" class="btn btn-primary btn-md" (click)="sortList('Employee_ID')">ID</button>&nbsp;
+          </div>
+  
+          <br>
+  
+  <!-- Employee List -->
+
+  <div class="list-group">
+
+      <div *ngFor="let user of userList | dataFilter : {FirstName:searchText, LastName:searchText, Employee_ID:searchText} ">
+
+          <form class="row">
+              <input class="form-control col-sm-8" type="text" value = {{user.FirstName}} readonly>&nbsp;
+              <button class="btn btn-primary col-sm-2" type="button" (click)="selectUser(user.User_ID)">Edit</button>
+            </form><br>
+
+            <form class="row">
+                <input class="form-control col-sm-8" type="text" value = {{user.LastName}} readonly>&nbsp;
+                <button class="btn btn-primary col-sm-2" type="button">Delete</button>
+              </form><br>
+
+              <form class="row">
+                  <input class="form-control col-sm-4" type="text" value = {{user.Employee_ID}} readonly> 
+                </form><br>
+
+                <hr class="separator">
+
+              </div>
+
+              
+      </div>
+      
+  
+  
+    </div>
+  </div>
+  

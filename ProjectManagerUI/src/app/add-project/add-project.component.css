@@ -1,0 +1,15 @@
+.col-form-label{
+    text-align: left;
+}
+.range-label{
+    width: 10%;
+    vertical-align: middle;
+}
+
+.form-control-range{
+    width: 80%;
+    display: inline;
+}
+.cls-center{
+    text-align: center;
+}
